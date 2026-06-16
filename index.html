@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,19 +14,19 @@
   --font-ar:"Noto Sans Arabic",sans-serif;
   --font-en:"Noto Sans",sans-serif;
 
-  --bg:#1E2329;
-  --surface:#232B32;
-  --surface-soft:#2B333B;
-  --border:rgba(255,255,255,.065);
-  --text:#F5F7F8;
-  --muted:#C6CDD2;
+  --bg:#FAFAFA;
+  --surface:#FFFFFF;
+  --surface-soft:#F6F6F6;
+  --border:#E6E6E6;
+  --text:#111111;
+  --muted:#6F6F6F;
 
-  --available:#00D979;
-  --limited:#FFD21F;
-  --unavailable:#FF4A4A;
-  --expected:#4C8DFF;
+  --available:#00A85A;
+  --limited:#C99A00;
+  --unavailable:#D92D20;
+  --expected:#2563EB;
 
-  --shadow:0 1px 2px rgba(0,0,0,.18),0 18px 38px rgba(0,0,0,.24),0 42px 90px rgba(0,0,0,.20);
+  --shadow:0 1px 2px rgba(0,0,0,.035),0 12px 28px rgba(0,0,0,.075),0 30px 70px rgba(0,0,0,.035);
 }
 
 *{box-sizing:border-box}
@@ -157,13 +157,14 @@ html,body{
 
 .sync-pill{
   height:30px;
-  min-width:130px;
+  min-width:160px;
   padding:0 12px;
   border-radius:999px;
   font-family:var(--font-en);
   font-size:11px;
   color:var(--muted);
   box-shadow:none;
+  margin-top:8px;
 }
 
 .page-pill{
@@ -178,7 +179,7 @@ html,body{
   font-size:13px;
   color:var(--muted);
   background:linear-gradient(180deg,var(--surface),var(--surface-soft));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
 }
 
 .list{
@@ -203,7 +204,7 @@ html,body{
   padding:12px 18px;
   border-radius:18px;
   background:linear-gradient(180deg,var(--surface),var(--surface-soft));
-  box-shadow:0 1px 2px rgba(0,0,0,.10),0 10px 24px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.10);
+  box-shadow:0 1px 2px rgba(0,0,0,.035),0 10px 24px rgba(0,0,0,.065),inset 0 1px 0 rgba(255,255,255,.70);
 }
 
 .card::before{
@@ -215,19 +216,19 @@ html,body{
 }
 
 .card[data-status="available"]::before{
-  background:linear-gradient(270deg,rgba(0,217,121,.24) 0%,rgba(0,217,121,.14) 23%,rgba(0,217,121,.045) 52%,transparent 76%);
+  background:linear-gradient(270deg,rgba(0,168,90,.24) 0%,rgba(0,168,90,.14) 23%,rgba(0,168,90,.045) 52%,transparent 76%);
 }
 
 .card[data-status="limited"]::before{
-  background:linear-gradient(270deg,rgba(255,210,31,.24) 0%,rgba(255,210,31,.14) 23%,rgba(255,210,31,.045) 52%,transparent 76%);
+  background:linear-gradient(270deg,rgba(201,154,0,.24) 0%,rgba(201,154,0,.14) 23%,rgba(201,154,0,.045) 52%,transparent 76%);
 }
 
 .card[data-status="unavailable"]::before{
-  background:linear-gradient(270deg,rgba(255,74,74,.24) 0%,rgba(255,74,74,.14) 23%,rgba(255,74,74,.045) 52%,transparent 76%);
+  background:linear-gradient(270deg,rgba(217,45,32,.24) 0%,rgba(217,45,32,.14) 23%,rgba(217,45,32,.045) 52%,transparent 76%);
 }
 
 .card[data-status="expected"]::before{
-  background:linear-gradient(270deg,rgba(76,141,255,.24) 0%,rgba(76,141,255,.14) 23%,rgba(76,141,255,.045) 52%,transparent 76%);
+  background:linear-gradient(270deg,rgba(37,99,235,.24) 0%,rgba(37,99,235,.14) 23%,rgba(37,99,235,.045) 52%,transparent 76%);
 }
 
 .icon{
@@ -249,7 +250,7 @@ html,body{
   inset:-7px;
   border-radius:50%;
   background:currentColor;
-  opacity:.15;
+  opacity:.14;
 }
 
 .card[data-status="available"] .icon{color:var(--available)}
@@ -319,7 +320,7 @@ html,body{
   overflow:hidden;
   border-radius:22px;
   background:linear-gradient(180deg,var(--surface),var(--surface-soft));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 28px rgba(0,0,0,.16);
+  box-shadow:0 1px 2px rgba(0,0,0,.035),0 12px 28px rgba(0,0,0,.060),inset 0 1px 0 rgba(255,255,255,.70);
 }
 
 .expiry-head{
@@ -333,13 +334,13 @@ html,body{
 }
 
 .expiry-head.red{
-  color:#FFC0C0;
-  background:linear-gradient(180deg,rgba(255,74,74,.22),rgba(255,74,74,.04));
+  color:#B42318;
+  background:linear-gradient(180deg,rgba(217,45,32,.18),rgba(217,45,32,.035));
 }
 
 .expiry-head.yellow{
-  color:#FFE1A3;
-  background:linear-gradient(180deg,rgba(255,210,31,.22),rgba(255,210,31,.04));
+  color:#8D6B00;
+  background:linear-gradient(180deg,rgba(201,154,0,.18),rgba(201,154,0,.035));
 }
 
 .expiry-list{
@@ -359,9 +360,9 @@ html,body{
 
 .empty-slot{
   border-radius:18px;
-  opacity:.24;
+  opacity:.25;
   background:linear-gradient(180deg,var(--surface),var(--surface-soft));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55);
 }
 
 .empty-message{
@@ -422,7 +423,7 @@ html,body{
       <div class="expiry-box">
         <div class="expiry-head red">
           <span>تنتهي خلال 30 يوم</span>
-          <span class="en">30 Days</span>
+          <span class="en" id="expiry30PagePill">30 Days</span>
         </div>
         <div class="expiry-list" id="expiry30"></div>
       </div>
@@ -430,7 +431,7 @@ html,body{
       <div class="expiry-box">
         <div class="expiry-head yellow">
           <span>تنتهي خلال 60 يوم</span>
-          <span class="en">60 Days</span>
+          <span class="en" id="expiry60PagePill">60 Days</span>
         </div>
         <div class="expiry-list" id="expiry60"></div>
       </div>
@@ -441,12 +442,18 @@ html,body{
 </main>
 
 <script>
-/* رابط Apps Script Web App */
+/* =========================================================
+   BAYYIN TV — GITHUB PAGE
+   This file reads from Apps Script JSONP.
+   Do not change function names unless you know what you are doing.
+   ========================================================= */
+
 const BAYYIN_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9hghgkQogSuVhF0r_obgqosp8yZpyE_2l112Lu7DqehyDZCOLqWZFGpVT9FL8Ysj3YA/exec";
 
 const PAGE_SIZE = 5;
 const SYNC_EVERY_MS = 20000;
 const UPDATE_PAGE_EVERY_MS = 120000;
+const EXPIRY_PAGE_EVERY_MS = 60000;
 
 let bayyinData = {
   updatesToday: [],
@@ -455,7 +462,11 @@ let bayyinData = {
 };
 
 let updatePageIndex = 0;
+let expiry30PageIndex = 0;
+let expiry60PageIndex = 0;
+
 let updateTimer = null;
+let expiryTimer = null;
 
 function escapeHtml(value){
   return String(value || "").replace(/[&<>"']/g, c => ({
@@ -488,6 +499,11 @@ function setSyncStatus(text){
 
 function fetchAppsScriptJSONP(){
   return new Promise((resolve, reject) => {
+    if(!BAYYIN_APPS_SCRIPT_URL || BAYYIN_APPS_SCRIPT_URL.includes("PASTE")){
+      reject(new Error("Apps Script URL is missing"));
+      return;
+    }
+
     const callbackName = "bayyinCallback_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
     const script = document.createElement("script");
     const separator = BAYYIN_APPS_SCRIPT_URL.includes("?") ? "&" : "?";
@@ -522,6 +538,9 @@ async function syncData(){
     bayyinData.expiry60 = Array.isArray(data.expiry60) ? data.expiry60 : [];
 
     updatePageIndex = 0;
+    expiry30PageIndex = 0;
+    expiry60PageIndex = 0;
+
     renderAll();
 
     const time = new Intl.DateTimeFormat("en-GB", {
@@ -535,6 +554,16 @@ async function syncData(){
   }catch(error){
     setSyncStatus("Sync failed");
     console.warn("Bayyin sync failed:", error);
+
+    const root = document.getElementById("updatesList");
+    root.innerHTML = `
+      <div class="empty-message">
+        <div>
+          <strong>فشل الاتصال بالبيانات</strong>
+          <span class="en">${escapeHtml(error.message || error)}</span>
+        </div>
+      </div>
+    `;
   }
 }
 
@@ -610,12 +639,18 @@ function renderUpdates(){
   pill.textContent = `${updatePageIndex + 1} / ${pages.length}`;
 }
 
-function renderExpiryList(id, items, status){
+function renderExpiryList(id, items, status, pageIndex, pillId, label){
   const root = document.getElementById(id);
-  const list = items || [];
-  const firstPage = list.slice(0, PAGE_SIZE);
+  const pill = document.getElementById(pillId);
 
-  if(!firstPage.length){
+  const list = items || [];
+  const pages = chunk(list, PAGE_SIZE);
+
+  if(pageIndex >= pages.length) pageIndex = 0;
+
+  const current = pages[pageIndex];
+
+  if(!current.length){
     root.innerHTML = `
       <div class="empty-message">
         <div>
@@ -624,17 +659,30 @@ function renderExpiryList(id, items, status){
         </div>
       </div>
     `;
+    if(pill) pill.textContent = `${label} 0/0`;
     return;
   }
 
-  const html = firstPage.map(item => renderExpiryCard(item, status)).join("");
-  root.innerHTML = fillFive(html, firstPage.length);
+  const html = current.map(item => renderExpiryCard(item, status)).join("");
+  root.innerHTML = fillFive(html, current.length);
+
+  if(pill) pill.textContent = `${label} ${pageIndex + 1}/${pages.length}`;
+}
+
+function renderExpiry(){
+  const pages30 = chunk(bayyinData.expiry30 || [], PAGE_SIZE);
+  const pages60 = chunk(bayyinData.expiry60 || [], PAGE_SIZE);
+
+  if(expiry30PageIndex >= pages30.length) expiry30PageIndex = 0;
+  if(expiry60PageIndex >= pages60.length) expiry60PageIndex = 0;
+
+  renderExpiryList("expiry30", bayyinData.expiry30, "unavailable", expiry30PageIndex, "expiry30PagePill", "30D");
+  renderExpiryList("expiry60", bayyinData.expiry60, "limited", expiry60PageIndex, "expiry60PagePill", "60D");
 }
 
 function renderAll(){
   renderUpdates();
-  renderExpiryList("expiry30", bayyinData.expiry30, "unavailable");
-  renderExpiryList("expiry60", bayyinData.expiry60, "limited");
+  renderExpiry();
 }
 
 function startUpdateRotation(){
@@ -647,6 +695,25 @@ function startUpdateRotation(){
     updatePageIndex = (updatePageIndex + 1) % pages.length;
     renderUpdates();
   }, UPDATE_PAGE_EVERY_MS);
+}
+
+function startExpiryRotation(){
+  if(expiryTimer) clearInterval(expiryTimer);
+
+  expiryTimer = setInterval(() => {
+    const pages30 = chunk(bayyinData.expiry30 || [], PAGE_SIZE);
+    const pages60 = chunk(bayyinData.expiry60 || [], PAGE_SIZE);
+
+    if(pages30.length > 1){
+      expiry30PageIndex = (expiry30PageIndex + 1) % pages30.length;
+    }
+
+    if(pages60.length > 1){
+      expiry60PageIndex = (expiry60PageIndex + 1) % pages60.length;
+    }
+
+    renderExpiry();
+  }, EXPIRY_PAGE_EVERY_MS);
 }
 
 function updateClock(){
@@ -674,10 +741,12 @@ function init(){
   setInterval(updateClock, 60000);
 
   renderAll();
+
   syncData();
   setInterval(syncData, SYNC_EVERY_MS);
 
   startUpdateRotation();
+  startExpiryRotation();
 }
 
 init();

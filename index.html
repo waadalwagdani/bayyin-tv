@@ -157,7 +157,7 @@ html,body{
 
 .sync-pill{
   height:30px;
-  min-width:160px;
+  min-width:170px;
   padding:0 12px;
   border-radius:999px;
   font-family:var(--font-en);
@@ -347,7 +347,7 @@ html,body{
   min-height:0;
   flex:1 1 auto;
   display:grid;
-  grid-template-rows:repeat(5,minmax(0,1fr));
+  grid-template-rows:repeat(4,minmax(0,1fr));
   gap:10px;
   padding:12px;
   overflow:hidden;
@@ -416,7 +416,7 @@ html,body{
       <div class="expiry-box">
         <div class="expiry-head red">
           <span>تنتهي خلال 30 يوم</span>
-          <span class="en" id="expiry30PagePill">30 Days</span>
+          <span class="en" id="expiry30PagePill">30D</span>
         </div>
         <div class="expiry-list" id="expiry30"></div>
       </div>
@@ -424,7 +424,7 @@ html,body{
       <div class="expiry-box">
         <div class="expiry-head yellow">
           <span>تنتهي خلال 60 يوم</span>
-          <span class="en" id="expiry60PagePill">60 Days</span>
+          <span class="en" id="expiry60PagePill">60D</span>
         </div>
         <div class="expiry-list" id="expiry60"></div>
       </div>
@@ -437,16 +437,20 @@ html,body{
 <script>
 const BAYYIN_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySUxng_6BG9ygJM5pAxBgukEbmfQ6_TABlUiSboi3D8Wu2GgD4RdHIU2E50yR2_c0O/exec";
 
-const PAGE_SIZE = 5;
+const UPDATE_PAGE_SIZE = 5;
+const EXPIRY_PAGE_SIZE = 4;
+
 const SYNC_EVERY_MS = 20000;
-const UPDATE_PAGE_EVERY_MS = 120000;
-const EXPIRY_PAGE_EVERY_MS = 60000;
+const UPDATE_PAGE_EVERY_MS = 100000;
+const EXPIRY_PAGE_EVERY_MS = 100000;
 
 let bayyinData = {
   updatesToday: [],
   expiry30: [],
   expiry60: []
 };
+
+let lastDataSignature = "";
 
 let updatePageIndex = 0;
 let expiry30PageIndex = 0;
@@ -523,15 +527,24 @@ async function syncData(){
       throw new Error(data && data.error ? data.error : "Invalid Apps Script response");
     }
 
-    bayyinData.updatesToday = Array.isArray(data.updatesToday) ? data.updatesToday : [];
-    bayyinData.expiry30 = Array.isArray(data.expiry30) ? data.expiry30 : [];
-    bayyinData.expiry60 = Array.isArray(data.expiry60) ? data.expiry60 : [];
+    const nextData = {
+      updatesToday: Array.isArray(data.updatesToday) ? data.updatesToday : [],
+      expiry30: Array.isArray(data.expiry30) ? data.expiry30 : [],
+      expiry60: Array.isArray(data.expiry60) ? data.expiry60 : []
+    };
 
-    updatePageIndex = 0;
-    expiry30PageIndex = 0;
-    expiry60PageIndex = 0;
+    const nextSignature = JSON.stringify(nextData);
 
-    renderAll();
+    if(nextSignature !== lastDataSignature){
+      bayyinData = nextData;
+      lastDataSignature = nextSignature;
+
+      updatePageIndex = 0;
+      expiry30PageIndex = 0;
+      expiry60PageIndex = 0;
+
+      renderAll();
+    }
 
     const time = new Intl.DateTimeFormat("en-GB", {
       hour:"2-digit",
@@ -542,17 +555,24 @@ async function syncData(){
 
     setSyncStatus("Synced " + time);
   }catch(error){
-    setSyncStatus("Sync failed");
+    setSyncStatus("Sync failed — keeping last data");
 
-    const root = document.getElementById("updatesList");
-    root.innerHTML = `
-      <div class="empty-message">
-        <div>
-          <strong>فشل الاتصال بالبيانات</strong>
-          <span class="en">${escapeHtml(error.message || error)}</span>
+    const hasExistingData =
+      (bayyinData.updatesToday && bayyinData.updatesToday.length) ||
+      (bayyinData.expiry30 && bayyinData.expiry30.length) ||
+      (bayyinData.expiry60 && bayyinData.expiry60.length);
+
+    if(!hasExistingData){
+      const root = document.getElementById("updatesList");
+      root.innerHTML = `
+        <div class="empty-message">
+          <div>
+            <strong>فشل الاتصال بالبيانات</strong>
+            <span class="en">${escapeHtml(error.message || error)}</span>
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
 
     console.warn("Bayyin sync failed:", error);
   }
@@ -596,8 +616,8 @@ function renderExpiryCard(item, status){
   `;
 }
 
-function fillFive(html, count){
-  const missing = Math.max(0, PAGE_SIZE - count);
+function fillSlots(html, count, size){
+  const missing = Math.max(0, size - count);
   return html + Array.from({length:missing}).map(() => `<div class="empty-slot"></div>`).join("");
 }
 
@@ -606,7 +626,7 @@ function renderUpdates(){
   const pill = document.getElementById("updatePagePill");
 
   const updates = bayyinData.updatesToday || [];
-  const pages = chunk(updates, PAGE_SIZE);
+  const pages = chunk(updates, UPDATE_PAGE_SIZE);
 
   if(updatePageIndex >= pages.length) updatePageIndex = 0;
 
@@ -626,7 +646,7 @@ function renderUpdates(){
   }
 
   const html = current.map(renderUpdateCard).join("");
-  root.innerHTML = fillFive(html, current.length);
+  root.innerHTML = fillSlots(html, current.length, UPDATE_PAGE_SIZE);
   pill.textContent = `${updatePageIndex + 1} / ${pages.length}`;
 }
 
@@ -635,7 +655,7 @@ function renderExpiryList(id, items, status, pageIndex, pillId, label){
   const pill = document.getElementById(pillId);
 
   const list = items || [];
-  const pages = chunk(list, PAGE_SIZE);
+  const pages = chunk(list, EXPIRY_PAGE_SIZE);
 
   if(pageIndex >= pages.length) pageIndex = 0;
 
@@ -655,14 +675,14 @@ function renderExpiryList(id, items, status, pageIndex, pillId, label){
   }
 
   const html = current.map(item => renderExpiryCard(item, status)).join("");
-  root.innerHTML = fillFive(html, current.length);
+  root.innerHTML = fillSlots(html, current.length, EXPIRY_PAGE_SIZE);
 
   if(pill) pill.textContent = `${label} ${pageIndex + 1}/${pages.length}`;
 }
 
 function renderExpiry(){
-  const pages30 = chunk(bayyinData.expiry30 || [], PAGE_SIZE);
-  const pages60 = chunk(bayyinData.expiry60 || [], PAGE_SIZE);
+  const pages30 = chunk(bayyinData.expiry30 || [], EXPIRY_PAGE_SIZE);
+  const pages60 = chunk(bayyinData.expiry60 || [], EXPIRY_PAGE_SIZE);
 
   if(expiry30PageIndex >= pages30.length) expiry30PageIndex = 0;
   if(expiry60PageIndex >= pages60.length) expiry60PageIndex = 0;
@@ -680,7 +700,7 @@ function startUpdateRotation(){
   if(updateTimer) clearInterval(updateTimer);
 
   updateTimer = setInterval(() => {
-    const pages = chunk(bayyinData.updatesToday || [], PAGE_SIZE);
+    const pages = chunk(bayyinData.updatesToday || [], UPDATE_PAGE_SIZE);
     if(pages.length <= 1) return;
 
     updatePageIndex = (updatePageIndex + 1) % pages.length;
@@ -692,8 +712,8 @@ function startExpiryRotation(){
   if(expiryTimer) clearInterval(expiryTimer);
 
   expiryTimer = setInterval(() => {
-    const pages30 = chunk(bayyinData.expiry30 || [], PAGE_SIZE);
-    const pages60 = chunk(bayyinData.expiry60 || [], PAGE_SIZE);
+    const pages30 = chunk(bayyinData.expiry30 || [], EXPIRY_PAGE_SIZE);
+    const pages60 = chunk(bayyinData.expiry60 || [], EXPIRY_PAGE_SIZE);
 
     if(pages30.length > 1){
       expiry30PageIndex = (expiry30PageIndex + 1) % pages30.length;

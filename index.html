@@ -381,13 +381,6 @@ html,body{
   font-size:20px;
   margin-bottom:6px;
 }
-
-.fade-change{
-  opacity:0;
-  transform:translateY(14px) scale(.992);
-  filter:blur(3px);
-  transition:opacity 520ms cubic-bezier(.2,.8,.2,1),transform 520ms cubic-bezier(.2,.8,.2,1),filter 520ms cubic-bezier(.2,.8,.2,1);
-}
 </style>
 </head>
 
@@ -442,12 +435,7 @@ html,body{
 </main>
 
 <script>
-/* =========================================================
-   BAYYIN TV — GITHUB PAGE
-   This file reads from Apps Script JSONP.
-   Do not change function names unless you know what you are doing.
-   ========================================================= */
-
+/* حطي هنا رابط Apps Script الأساسي بدون ?callback=test */
 const BAYYIN_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9hghgkQogSuVhF0r_obgqosp8yZpyE_2l112Lu7DqehyDZCOLqWZFGpVT9FL8Ysj3YA/exec";
 
 const PAGE_SIZE = 5;
@@ -499,28 +487,31 @@ function setSyncStatus(text){
 
 function fetchAppsScriptJSONP(){
   return new Promise((resolve, reject) => {
-    if(!BAYYIN_APPS_SCRIPT_URL || BAYYIN_APPS_SCRIPT_URL.includes("PASTE")){
-      reject(new Error("Apps Script URL is missing"));
-      return;
-    }
-
-    const callbackName = "bayyinCallback_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+    const callbackName = "bayyinCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
     const script = document.createElement("script");
     const separator = BAYYIN_APPS_SCRIPT_URL.includes("?") ? "&" : "?";
 
+    const timeout = setTimeout(() => {
+      delete window[callbackName];
+      script.remove();
+      reject(new Error("Apps Script timeout"));
+    }, 15000);
+
     window[callbackName] = data => {
+      clearTimeout(timeout);
       delete window[callbackName];
       script.remove();
       resolve(data);
     };
 
     script.onerror = () => {
+      clearTimeout(timeout);
       delete window[callbackName];
       script.remove();
       reject(new Error("Apps Script JSONP failed"));
     };
 
-    script.src = `${BAYYIN_APPS_SCRIPT_URL}${separator}callback=${callbackName}&t=${Date.now()}`;
+    script.src = BAYYIN_APPS_SCRIPT_URL + separator + "callback=" + callbackName + "&tv=1&t=" + Date.now();
     document.body.appendChild(script);
   });
 }
@@ -553,7 +544,6 @@ async function syncData(){
     setSyncStatus("Synced " + time);
   }catch(error){
     setSyncStatus("Sync failed");
-    console.warn("Bayyin sync failed:", error);
 
     const root = document.getElementById("updatesList");
     root.innerHTML = `
@@ -564,6 +554,8 @@ async function syncData(){
         </div>
       </div>
     `;
+
+    console.warn("Bayyin sync failed:", error);
   }
 }
 
